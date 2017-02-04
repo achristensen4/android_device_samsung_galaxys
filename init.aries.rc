@@ -3,14 +3,8 @@ on boot
 
     setprop ro.build.product aries
     setprop ro.product.device aries
-    setprop ro.radio.noril yes
+    setprop ro.radio.noril no
     setprop ro.bt.bdaddr_path "/efs/bluetooth/bt_addr"
-
-# fake some battery state
-    setprop status.battery.state Slow
-    setprop status.battery.level 5
-    setprop status.battery.level_raw  50
-    setprop status.battery.level_scale 9
 
 # wi-fi
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
@@ -67,22 +61,18 @@ service pvrsrvinit /system/vendor/bin/pvrsrvinit
 
 service wpa_supplicant /system/bin/wpa_supplicant -Dwext -ieth0 -c/data/misc/wifi/wpa_supplicant.conf
     socket wpa_eth0 dgram 0660 wifi wifi
-    disabled
     oneshot
 
 service dhcpcd /system/bin/dhcpcd -ABKL
-    disabled
     oneshot
 
 service hciattach /system/bin/brcm_patchram_plus --enable_hci --enable_lpm \
     --baudrate 3000000 --patchram /vendor/firmware/bcm4329.hcd /dev/s3c2410_serial0
     user bluetooth
     group bluetooth net_bt_admin
-    disabled
     oneshot
 
 # bugreport is triggered by holding down volume down, volume up and power
 service bugreport /system/bin/dumpstate -d -v -o /sdcard/bugreports/bugreport
-    disabled
     oneshot
     keycodes 114 115 116
